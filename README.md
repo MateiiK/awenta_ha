@@ -6,6 +6,4 @@ Simple HA integration for Awenta AHR recuperation units, I did not add "hidro" m
 
 <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=MateiiK&repository=awenta_ha&category=Recuperation" target="_blank" rel="noreferrer noopener"><img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open a repository inside the Home Assistant Community Store." /></a>
 
-If you like it you can always <a href="https://www.buymeacoffee.com/MateiK">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="200">
-</a>
+If you like it you can always [![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/MateiK)
