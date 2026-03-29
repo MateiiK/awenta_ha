@@ -5,9 +5,9 @@ from .const import DOMAIN
 
 
 MODE_MAP = {
-    "Recuperation": 0,
+    "Recuperation": 2,
     "Supply": 1,
-    "Extract": 2,
+    "Extract": 0,
 }
 
 MODE_MAP_REV = {v: k for k, v in MODE_MAP.items()}
