@@ -1,10 +1,5 @@
 {
-  "domain": "awenta_ha",
   "name": "Awenta HRV",
-  "codeowners": [MateiiK],
-  "dependencies": [],
-  "documentation": "https://github.com/MateiiK/awenta_ha",
-  "integration_type": "hub",
-  "iot_class": "cloud_polling",
-  "requirements": []
+  "domains": ["awenta_ahr"],
+  "content_in_root": false
 }
