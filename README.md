@@ -1,6 +1,6 @@
 # Awenta HRV Home Assistant Integration
 
-[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MateiiK&repository=awenta_ha&category=integration)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MateiiK&repository=awenta_ha&category=Integration)
 [![GitHub Release](https://img.shields.io/github/v/release/MateiiK/awenta_ha?label=release&style=flat-square)](https://github.com/MateiiK/awenta_ha/releases)
 [![License](https://img.shields.io/github/license/MateiiK/awenta_ha?style=flat-square)](https://github.com/MateiiK/awenta_ha/blob/main/LICENSE)
 
