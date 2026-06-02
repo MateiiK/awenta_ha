@@ -1,0 +1,434 @@
+From e31e5a65d9e2dea53a4abec2359e7a43cde250ff Mon Sep 17 00:00:00 2001
+From: Dawid Karczewski <goliat931@gmail.com>
+Date: Sat, 30 May 2026 21:49:13 +0200
+Subject: [PATCH] fix(config): Rename ConfigFlow class and fix DOMAIN mismatch-
+ Rename AwentaConfigFlow to ConfigFlow (required by Home Assistant)- Fix
+ DOMAIN from 'awenta' to 'awenta_ahr' to match manifest.json- Add test suite
+ with pytest (conftest.py, test_awenta_api.py, test_config_flow.py)- Add
+ requirements-test.txt for easy test setup
+
+---
+ custom_components/awenta_ahr/config_flow.py   |   2 +-
+ custom_components/awenta_ahr/const.py         |   2 +-
+ custom_components/awenta_ahr/manifest.json    |   2 +-
+ pytest.ini                                    |   6 ++
+ requirements-test.txt                         |   7 ++
+ .../conftest.cpython-314-pytest-7.4.3.pyc     | Bin 0 -> 1921 bytes
+ ...st_awenta_api.cpython-314-pytest-7.4.3.pyc | Bin 0 -> 9971 bytes
+ ...t_config_flow.cpython-314-pytest-7.4.3.pyc | Bin 0 -> 5478 bytes
+ tests/conftest.py                             |  51 +++++++++++++
+ tests/test_awenta_api.py                      |  68 ++++++++++++++++++
+ tests/test_config_flow.py                     |  41 +++++++++++
+ 11 files changed, 176 insertions(+), 3 deletions(-)
+ create mode 100644 pytest.ini
+ create mode 100644 requirements-test.txt
+ create mode 100644 tests/__pycache__/conftest.cpython-314-pytest-7.4.3.pyc
+ create mode 100644 tests/__pycache__/test_awenta_api.cpython-314-pytest-7.4.3.pyc
+ create mode 100644 tests/__pycache__/test_config_flow.cpython-314-pytest-7.4.3.pyc
+ create mode 100644 tests/conftest.py
+ create mode 100644 tests/test_awenta_api.py
+ create mode 100644 tests/test_config_flow.py
+
+diff --git a/custom_components/awenta_ahr/config_flow.py b/custom_components/awenta_ahr/config_flow.py
+index d9feef6..e7e0bdc 100644
+--- a/custom_components/awenta_ahr/config_flow.py
++++ b/custom_components/awenta_ahr/config_flow.py
+@@ -12,7 +12,7 @@ DATA_SCHEMA = vol.Schema(
+ )
+ 
+ 
+-class AwentaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
++class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+ 
+     async def async_step_user(self, user_input=None):
+ 
+diff --git a/custom_components/awenta_ahr/const.py b/custom_components/awenta_ahr/const.py
+index 614d138..d3a5019 100644
+--- a/custom_components/awenta_ahr/const.py
++++ b/custom_components/awenta_ahr/const.py
+@@ -1,4 +1,4 @@
+-DOMAIN = "awenta"
++DOMAIN = "awenta_ahr"
+ 
+ PLATFORMS = ["fan", "sensor", "select"]
+ 
+diff --git a/custom_components/awenta_ahr/manifest.json b/custom_components/awenta_ahr/manifest.json
+index afda01f..f40e7e3 100644
+--- a/custom_components/awenta_ahr/manifest.json
++++ b/custom_components/awenta_ahr/manifest.json
+@@ -4,8 +4,8 @@
+   "version": "1.0.0",
+   "documentation": "https://github.com/MateiiK/awenta_ha",
+   "issue_tracker": "https://github.com/MateiiK/awenta_ha/issues",
++  "requirements": ["websockets>=12.0"],
+   "config_flow": true,
+   "iot_class": "cloud_push",
+-  "requirements": ["websockets>=12.0"],
+   "codeowners": ["MateiiK"]
+ }
+diff --git a/pytest.ini b/pytest.ini
+new file mode 100644
+index 0000000..cdce43f
+--- /dev/null
++++ b/pytest.ini
+@@ -0,0 +1,6 @@
++[pytest]
++asyncio_mode = auto
++testpaths = tests
++python_files = test_*.py
++python_classes = Test*
++python_functions = test_*
+diff --git a/requirements-test.txt b/requirements-test.txt
+new file mode 100644
+index 0000000..0724988
+--- /dev/null
++++ b/requirements-test.txt
+@@ -0,0 +1,7 @@
++pytest==7.4.3
++pytest-asyncio==0.21.1
++aioresponses==0.7.6
++websockets>=12.0
++aiohttp>=3.8.0
++voluptuous>=0.12.0
++homeassistant>=2024.1.0
+diff --git a/tests/__pycache__/conftest.cpython-314-pytest-7.4.3.pyc b/tests/__pycache__/conftest.cpython-314-pytest-7.4.3.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..975c5b89b775665771127fdf8aabf792e2ed9972
+GIT binary patch
+literal 1921
+zcmZ`(J8v6D5Z-(69(;)uMae=E*|H2LbRa4SToFkiS+YSDmW@N=iuU4kJV|FA@0i`C
+zWeO>n2Vet9;nIC7BflfPs({!eaDb#qcMc1?%<S@EDv=Jj+1Z)dnfYdB_rrWHjo|zF
+ztHp;uX$W~@Gye1uGk60`4?RGRvW=J`SGBHn)QhODv(&|*#$bljn9PJ#-L~pBv!zbk
+zPS-OmQ_r&O$Tr7vWweYOeE~VC>*_EL%iqu4T^a{}yE?`Kx<1;n!Z|kPluhv*8*9pD
+z_8c2~%BJKfE2xtGTg2X}C|tkmvV)4s?G4(EyxXyN$nD$iejwRXl~YFP4z2>@LhbHD
+z-5kW!2Wh6wqZlf=fSB&6EOiet!_gp)&Mo1x?o#TF&kHxAI?x$w@G&qww1)1XNXX^a
+z0L}0lR|vGDdLrbY74$;csc2kpy38fQm=|4<J@$z2G9NRS9tvpG5BI1DdzF8>S!;Yj
+zeL@@iaTvIbJCVOdf=7O1D?aSB{D^fM?h!05K5!e%r;IkdINB3jwcX_w#z7P?jCpa4
+zr#cp8AOI}^>7oAI{8Rl0`?uw5Kfd!+|HWDwfEZO&BIc3UKz1soa2B~OADpEzZpF<`
+zDEKVKUv}JZq?y5ZFCdhKLF7j<#v})ac^PBMTo!oPWsC&79mr4Qgs~SwiJO7PJU<LE
+z2K2cpAsiEBSSMMLhcPB1D>?(@%@auewW_9869j|^nKU~!0Hda%!91vYs4;2ixJ@gF
+zSfHvX^6U#V^dn+&{Q&YKi@+A(ry_C>{go+wUpvvu((Y6!9rU8HgS<3!V7469(biNs
+zQz^gY2H|l*bZ6av?6%sWU-jY^x7rZpC?-vw6}s_`TmUaaB9Y0A3N08+F)>YOd*FtY
+zh-+GgpNcelC^3*-I4Q35t=VTgNlMEa3DQ!=|C2SrTqZlL%Q#s_cT$eArplyEZivox
+zC|Bb{ZnRzEwtx?sJTEfE6q4~7hP`&^clpe;5Cmr;C`kliydOlE__Q5IFyQY)GVcix
+zf*FD+KD*Ml3jJ*1WcG4DTRbUU0W_s_k}?D&<19#GR3)T$rI*u?9MiGZw5lS3+2j(K
+zkYzzG1L3-u;N#5afa=ng|0wW$uC-k6xVW)VyK$qoxmnxVs@=R<yLF4FVEFxzYa4av
+zOn_wxuqmC;w-8q$%m?t(kAO@={G%}cJl8LjPZqBA3k%Q7iK*xEiDn3_w!mtSuvX@{
+zwc80o7DSY1*V|n@*)8IBR}{YrljIW?#8H*_M<ifAw<jWQj%8^$EPLe=uF)>#`a>E=
+z+-$?E8V0*W+!>zhz}q363PAG3B4WZ}4&-5ZUAVayJZ2r@%UdFcQ8tqZxc?nq>yzQT
+z@foRsR$N5-4Uj}r6y+sC-=S~QzoN|V=)y}>{S)P0Tbi=^3IR#7NVT3UeZBNbRh0RG
+lhSWkLxWt;sb;TITflKlexjB&om&{G%>5=>&6*zf2{sn#nv(5kj
+
+literal 0
+HcmV?d00001
+
+diff --git a/tests/__pycache__/test_awenta_api.cpython-314-pytest-7.4.3.pyc b/tests/__pycache__/test_awenta_api.cpython-314-pytest-7.4.3.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..db37fd47ef7c66544515d93c8ecc46413d5a3198
+GIT binary patch
+literal 9971
+zcmeHNU2GKB6~41OyF0V%U1NJ4V}oIh9l{33;6Hv0PHSuv+hDpG$hxgItd{k}9$4=V
+zcg7GqP2~JYkmjL@QmLqY=xeC@5LJ;XrBW4<Myb+9vTM+yNm?Q`Rg{NHv_y)EDz)d#
+z?422}7aS-_`jBC{_s+fN+`n_@obR0L?U8Vh!1K-z8c(VsAz6H3k5DSyxWEyzK#miM
+z8znkt=AIGntY<SB;dS3;tHrPT&6a>3fZQ`GjEK5864ZkuAw5*0snV;U%{v+%iRh8d
+z<ngM+CN`LpCt92`D;+0~*R+twBk;er2WEp$Vyl(A(@J#`-yU*k7<Z4ysxxQi8;y?C
+z>-8|BK%(8DWu-(1D>=F3Zy-ITSAG2*@C96ajd#E&xcHhRv4Q9tB(9ajgP-Coj>Nr&
+zIH1ktv*U&ADMK93Oet2;r)Ko*beuEzL`I)BYO=GMUYJQ|3o~jVFXwd)n#6&#P|6G>
+zMzdaLi3GRpc|!ObZ}|z?LN>!8NR>99kO@xW+M68eBqw>??>(iSRBy`eQ}VLy-^Zo7
+zS<kFDZEvE=r+ln8wy~<usY}5etS7+^CaZwFg(N+!Z;9Vsnq|_LxBHwpmZ)+ul!}SS
+z>bkr=Qqr5KS>4WN_Xv@ECt+<*atq$Wz98%m(ATb}SN)Rz^qFK}&j=x>&p%Kin0l9x
+zjU*Li^ojde$;n%Y6iEu*oK!tA)$QrwtrjUD390prD&dj=t81}$buUy+HJ6RFk<mFh
+z?4K<gHp9t=GQJ8QtDA3}lLSe0t*A1+-<DHwP1*pX-QjJwr9y}*N+GE#DemA_)CN<w
+z>TvbE#aSgQ!K{O<XO>TMl5ZcU`uB149LTYa(K<QEG5kNuaosm^Tp_V9UyfTH`LPnn
+z(T8#z<L>xttTDgF+Ha)zRZ3Cv;Xh_iHiOn}B>^(*Is9gfY$r@xO@Tq*NE84i&7g_#
+zAJXmfHWP*G^(tJvZa#8M*7O)yxmd0+rQ{8tJd;s!hM;CN?QDTg-fYS!g=t+^I|g$K
+z7{sHprYVJdhg#6|i=0tKWqp?B(`PcdS^0<&(V@4r2If}Q)5@gbRp)jZ-i)eXsSA_d
+z`3UqZQ$2S7Hg#@yT*J!UMzx#qlstElyXoogk8|^#NY)kCf=`tSv3`?tXI$%0CQCyF
+zpN{og)xB}B-Sb_yVS>&pbKUeSS}b4Cfq&<1__gUwCyZy&np43sqci}Y5=Co75k(pN
+zNv#08IXOF{Y6h>%PwF&`^}%#H1KTLmblUJ)TQ1t`FoNG!=gghRP@^WD&E#@vDytNM
+zNruWs6*Q+$%qlru$!mr`R{#plSfAFW3$wXNlQcb*E1byW()rAcY=~(s^Ms5&7?A;U
+z*Fki{loqH_mwuu^XEJ(Pep1b4@);dkjG(hQ29FDkhYWri<Ylaz0hy+=RGx&%D>!PM
+zS!1pM2G#&LfmGMw5=FBG4~P*qi>%oQ;ruP}ce-DC+%MhMi#5Gn?w36pqOYx6x5i43
+zF*MkhdJM+ZQd5PTl1Y6hFAq`WjGP)OoSL11sm`S`CX7o@XHvManwh3cm2faS)Vb2B
+zg_pFs9NG<|ps=*_fSEo8g!h@BgrYAGy|(*GQ}<%;@LMOZ^gg;Alokd*79)$*+lylR
+zWwHHr@x%2kKMS1?f7rbBjiFzU{c3FSThemR(aX)p&WA4xO;`6GEDD>JgiS>uz9hsi
+z3%fpw)ci<!QF-Z9QD|Hg8b1+s7Vq_MS=f0^=qldp-?GqkO=vCN>))S**3aum@S!EK
+z{hvW1Hhms~7uelJvHjoLFi7ONj`2<0>jTZ>LEoh?Hy#i!MFt*%m$&y1wnFx9Y;X%?
+zfA9|ULH5V~AW**_;Gq0|Ff_hFe7|0VnrsO(LVtu*!+#Uc{}52|UE_IP@+SGb?FUFa
+zyp^0OLQ<$2%m*}fiKYV9_ocwuv>t}0Rlif0GM!RvuY}p%m{aoGSl^$w$DWWA_;r>&
+zm9Tl<_9c>hqP~m)UfJvb>j%oPK3@s3tASJ_>m_NUS5-L9oxYG1O%LD~%wi35Q}FeH
+z4`3tsL`7sS-Iol457032qRR(Bq;2EtM2wB;<YhhpAmbGyRYb*(SHWb*<~q5djK2at
+zZXv7r!6y)<pcJ~Jxmx~;vnv(nn&el_(ehUuzKU~n_+W0}MYwjqGQBNDDZD1Fz~&@H
+z)}$2~?GE1xG!>GnrFF?rnQv2-Vxn-Lmu-%`SqZ+5D%La0!M6#3Z-f5@@NX`{S+C%2
+z9w%=9U8-@vsbQ)1^xu;a^8}w|Q<<78I~BJ&zX3SE>nHx=I={g+_b1F|FV(F{8)39N
+zJS+CHT8c{b$?CGbTz3b1xsLVB^3q<0VIQ9XPaOWakZGWVOl#Iara<RHrj7H_V~9+1
+ziUwe3DmE#fQL?f|QAbi#g%qO{6hj3RQ31t3#u19@-0<e)Ji^LO3y(mln_>(C>-OBN
+zcHz%XfRP3dlz>uaGTHf>fq}jQ2l@sF`-X=4hKKtO9z>p=n{Ldy%fhU?D5^#Pi{l6u
+z0RvhH6$%bQ-G)uwtO*LGrcMB_r3D3_jyvdekBMGukqbx|rtN{+dJA8I79bSeHwS4_
+zjCxR1uoS;?6J=7+OvI?dy-SzIF#>D{dyxv&B;AZj3=`0VgrZ8Jt(f3PPw$5$UPJM7
+zqH#<fgv6*f5nZXTmB5c~M=FdJy5U?G#YmyMX1Dug1;E>DAzTakb*_MjJLwL)8>_w7
+z4Gni|7?c8NXk$YYBGN8osxcw8dpGD9)Z-p#6JU^U3-PW-+ZG027{6M-6|y610ls6)
+zJ&#>(PTm^u6(gILBAb>Yv7!)L6k?wUZN;zkcSUHsChRNT?QdDw_j!$j*jiQ~wufPZ
+zpWA=P%l&qsd2EO8(gtp<UAVMypdVg-*ECQA**on+yC8dSOAyH3Yv-`MBXo#}@AZjL
+zleIw<bcLV33DsVM+Pj8o9w+q5fQ;%*dJ=X}6h<jMPWTVPn4W|y*v2SM4<>mGC!T)H
+zR{#Go)xQm)5;kmOJQ$djLP;N}|Eh@|m-_cge98{TRtmzF!50e>I3rbncWzk7W>^Yg
+zI(!wvvu-|s1Uv*A{9nS{?C|s*&duh7x%s6)YOS@{u&69#>c`-0(qCo@11THyx_Yhv
+z4q%sTAmlQIK`?{Iq+lyCLoDI>Ev6x(@)W3JnW8a6RV3$S8bc5NL?(O6W!6j!CfE(A
+z)=V=-_hYFa6a21@z!il@$+HLv*s++BH^UKNE-X_7g_6C2_(=yFQv-`rWmyyaxQrS$
+zu{5JFL{`$iu$>TGb^^~KJ&XyeZ2Ax;BbbarqM@vqmbTRMeWrR|H4T~o%ALsab4YHh
+zqd%@*|I$+nBUkxAk#Ah$8!v3T%(s5Rw-vvV-xA;UFAagna|fD-Yq?9YfiPrmcMP;a
+zmMuAa&};=2;Bth&@djucc6+FDjz)5>c9?ET!o8szbi%vW{my`v>Pd2mfH}&Fq?|s1
+zTD0t8W3e-wKtNUYFdEf6(UpfaSkEoA;!x6Sg5q+mxQ2F<YE7+JH!<kailBQ^wq~p3
+zu2$5F&PXVjvIo9fTZ5Eo9*3{;_ipon=2@u|E7RMW$Go7r_v^UT1=U*Xu=!ve!YZu@
+z?r8<BXgl#POJF;e&KBQ7D{`O}hbx~KRY)PQHJ_yIE~?`3ZKp3LgXT&44U>}{AaGV#
+z;kptmY;7_G7B)KZ(-mhabVp~&3J^FWRXj^6+reYs51VT#K;ZCKJR__5K_=jY{~w?G
+zu<Ha=T$3Y3aQfF+f6{jPrRp_l?JLT%06~?sPO3>(m09wz6L@m<T=~q}t~HY)IJIzQ
+zF*u-#aCYA`|FWQdzQMHS?0N+60U$s=El(aPv*DJ}HqAF$ZX*nVb~&rdlMss5rX530
+zO@C|`kkH+jAR424FhO8R`!GQ~0+zmg?Q4nBH3+(l-2B+xd8XD4N10n%Z3J-MIpu_f
+z9nb_&Jm`jB&SwjgaM>^|KRKyPfz$p)QG>bkc*OE9k79?YAgP3ji5g7&U_%Fb02|Po
+zq=T3YVKR)#K}a-I1C_kLCKF!ZqS8!irU(Ft(IoKfL*~6;rWeRx`PvVIbw3_`_0VEV
+z=j#t#Y3W<sfB5&`zq0?k%fat041N^d@RP%@9LBZ>ue9_RTZWcehL&3nE=M0JMju^@
+zKDrz|x-fpVdgBWtUm5tg#&0Tq-M<^KgCxGu5ZKj}8B{PD)7E8HhZS(aTSF?JrHT$`
+z#jY{}r8?`-U@*h*TYN@%Hm~R?y$%dInD=VbJa;@&d9^vs2*6+Rn1>SGH;ClmpY!<P
+zattmQfk3B*kWN3L<Yc&Q^Wzm-UN`F5<<B(jU`16iPqo3%Waud)kikD1QVQlpkQpj4
+zv8Z`kE)qHcLs`gG*gsR4oXyD(Qw8b}>1n@&<hqyRxNC&GK%NhMK*HBZ?-J?#fCT?c
+z)?fD%jz1?nE1au-w)$o6mF`#c3nQ;SQ*3BoYG^MubT2h@FYX$>(lEMQH+GpE`Wx8}
+z93J7^hG#bvx#$uX{f8&awcYR%PyKZ)U5}NuM!5Z@Rw!NHQq~&a?k}}M>9eTFZ8lf)
+EUqY@{vj6}9
+
+literal 0
+HcmV?d00001
+
+diff --git a/tests/__pycache__/test_config_flow.cpython-314-pytest-7.4.3.pyc b/tests/__pycache__/test_config_flow.cpython-314-pytest-7.4.3.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..beccf356c99e242a775bf0f105840697b8b0f6ff
+GIT binary patch
+literal 5478
+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
+H6xi}#vI^S%
+
+literal 0
+HcmV?d00001
+
+diff --git a/tests/conftest.py b/tests/conftest.py
+new file mode 100644
+index 0000000..fad9867
+--- /dev/null
++++ b/tests/conftest.py
+@@ -0,0 +1,51 @@
++import sys
++import json
++from pathlib import Path
++from unittest.mock import AsyncMock, MagicMock
++
++import pytest
++
++
++# Mock Home Assistant objects
++class MockHass:
++    def __init__(self):
++        self.data = {}
++        self.async_create_task = AsyncMock()
++
++
++@pytest.fixture
++def hass():
++    return MockHass()
++
++
++@pytest.fixture
++def mock_credentials():
++    return {
++        "email": "test@example.com",
++        "password": "testpassword"
++    }
++
++
++@pytest.fixture
++def mock_login_response():
++    return {
++        "status": "ok",
++        "params": {
++            "id": "test_socket_id",
++            "key": "test_socket_key"
++        }
++    }
++
++
++@pytest.fixture
++def mock_devices_response():
++    return {
++        "status": "ok",
++        "params": [
++            {
++                "name": "Test Device",
++                "mac": "AA:BB:CC:DD:EE:FF",
++                "model": "AHR"
++            }
++        ]
++    }
+diff --git a/tests/test_awenta_api.py b/tests/test_awenta_api.py
+new file mode 100644
+index 0000000..4e306c2
+--- /dev/null
++++ b/tests/test_awenta_api.py
+@@ -0,0 +1,68 @@
++import json
++import pytest
++from unittest.mock import AsyncMock, MagicMock, patch
++import sys
++from pathlib import Path
++
++# Add custom_components to path
++sys.path.insert(0, str(Path(__file__).parent.parent / "custom_components"))
++
++from awenta_ahr.awenta_api import AwentaAPI
++
++
++@pytest.mark.asyncio
++async def test_api_login(hass, mock_credentials, mock_login_response):
++    """Test API login"""
++    api = AwentaAPI(hass, mock_credentials["email"], mock_credentials["password"])
++    
++    with patch("aiohttp.ClientSession.post") as mock_post:
++        mock_response = AsyncMock()
++        mock_response.text = AsyncMock(return_value=json.dumps(mock_login_response))
++        mock_post.return_value.__aenter__.return_value = mock_response
++        
++        await api.login()
++        
++        assert api.id_socket == "test_socket_id"
++        assert api.key_socket == "test_socket_key"
++        assert api.sha1 is not None
++
++
++@pytest.mark.asyncio
++async def test_list_devices(hass, mock_credentials, mock_login_response, mock_devices_response):
++    """Test listing devices"""
++    api = AwentaAPI(hass, mock_credentials["email"], mock_credentials["password"])
++    api.id_socket = "test_socket_id"
++    api.key_socket = "test_socket_key"
++    
++    with patch("aiohttp.ClientSession.post") as mock_post:
++        mock_response = AsyncMock()
++        mock_response.text = AsyncMock(return_value=json.dumps(mock_devices_response))
++        mock_post.return_value.__aenter__.return_value = mock_response
++        
++        await api.list_devices()
++        
++        assert len(api.devices) == 1
++        assert api.devices[0]["mac"] == "AA:BB:CC:DD:EE:FF"
++
++
++@pytest.mark.asyncio
++async def test_register_listener(hass, mock_credentials):
++    """Test registering listener callback"""
++    api = AwentaAPI(hass, mock_credentials["email"], mock_credentials["password"])
++    
++    callback = AsyncMock()
++    api.register_listener(callback)
++    
++    assert callback in api.listeners
++
++
++def test_sha1_password_hashing(mock_credentials):
++    """Test password is hashed"""
++    import hashlib
++    api = AwentaAPI(MagicMock(), mock_credentials["email"], mock_credentials["password"])
++    
++    expected_hash = hashlib.sha1(mock_credentials["password"].encode()).hexdigest()
++    api.sha1 = expected_hash
++    
++    assert api.sha1 == expected_hash
++    assert len(api.sha1) == 40  # SHA1 hex length
+diff --git a/tests/test_config_flow.py b/tests/test_config_flow.py
+new file mode 100644
+index 0000000..03ab3e9
+--- /dev/null
++++ b/tests/test_config_flow.py
+@@ -0,0 +1,41 @@
++import pytest
++from unittest.mock import AsyncMock, MagicMock, patch
++import sys
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).parent.parent / "custom_components"))
++
++from awenta_ahr.config_flow import ConfigFlow
++from awenta_ahr.const import DOMAIN
++
++
++@pytest.mark.asyncio
++async def test_config_flow_user_step(mock_credentials):
++    """Test config flow user step"""
++    flow = ConfigFlow()
++    flow.async_set_unique_id = AsyncMock()
++    flow._abort_if_unique_id_configured = MagicMock()
++    flow.async_create_entry = MagicMock(return_value="result")
++    
++    result = await flow.async_step_user(mock_credentials)
++    
++    # Check entry was created
++    assert flow.async_create_entry.called
++    call_kwargs = flow.async_create_entry.call_args[1]
++    assert call_kwargs["title"] == "Awenta HRV"
++    assert call_kwargs["data"] == mock_credentials
++
++
++@pytest.mark.asyncio
++async def test_config_flow_shows_form():
++    """Test config flow shows form when no input"""
++    flow = ConfigFlow()
++    flow.async_show_form = MagicMock(return_value="form_result")
++    
++    result = await flow.async_step_user(None)
++    
++    # Check form was shown
++    assert flow.async_show_form.called
++    call_kwargs = flow.async_show_form.call_args[1]
++    assert call_kwargs["step_id"] == "user"
++    assert "data_schema" in call_kwargs
+-- 
+2.53.0.windows.2
+
