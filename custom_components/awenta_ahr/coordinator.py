@@ -12,7 +12,7 @@ class AwentaCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            name="awenta",
+            name="awenta",ł
             update_interval=None,
         )
 
