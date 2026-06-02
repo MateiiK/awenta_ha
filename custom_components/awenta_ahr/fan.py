@@ -131,16 +131,45 @@ class AwentaFan(RestoreEntity, AwentaEntity, FanEntity):
             except Exception:  # pragma: no cover - defensive
                 LOGGER.exception("Failed to restore last state for %s", self.mac)
 
-    async def async_turn_on(self, percentage: int | None = None, **kwargs):
+    async def async_turn_on(
+        self,
+        speed: str | int | None = None,
+        percentage: int | None = None,
+        **kwargs,
+    ):
         """Turn the fan on.
 
         If a percentage is provided, delegate to `async_set_percentage`.
+        If a speed is provided, map it to an equivalent percentage.
         Otherwise restore last known non-zero gear or set to gear 1.
         """
 
         if percentage is not None:
             await self.async_set_percentage(percentage)
             return
+
+        if speed is not None:
+            use_percentage = None
+            if isinstance(speed, int):
+                use_percentage = speed
+            elif isinstance(speed, str):
+                speed_lower = speed.lower()
+                if speed_lower in {"low", "slow", "1"}:
+                    use_percentage = 33
+                elif speed_lower in {"medium", "med", "2"}:
+                    use_percentage = 66
+                elif speed_lower in {"high", "3"}:
+                    use_percentage = 100
+                else:
+                    try:
+                        use_percentage = int(speed_lower)
+                    except ValueError:
+                        use_percentage = None
+
+            if use_percentage is not None:
+                await self.async_set_percentage(use_percentage)
+                return
+
         # Prefer the last remembered percentage, then device-reported gear, then default to 1
         if self._last_percentage is not None:
             use_percentage = self._last_percentage
