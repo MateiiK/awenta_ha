@@ -1,11 +1,11 @@
 {
   "domain": "awenta_ahr",
   "name": "Awenta HRV",
-  "version": "1.0.0",
-  "documentation": "https://github.com/MateiiK/awenta_ha",
-  "issue_tracker": "https://github.com/MateiiK/awenta_ha/issues",
+  "codeowners": ["@goliat931"],
   "config_flow": true,
+  "documentation": "https://github.com/goliat931/awenta_ha",
   "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/goliat931/awenta_ha/issues",
   "requirements": ["websockets>=12.0"],
-  "codeowners": ["MateiiK"]
+  "version": "1.0.0"
 }
